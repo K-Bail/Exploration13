@@ -1,0 +1,92 @@
+--
+title: 'Exploration 13: Workflow'
+author: 'Jake Bowers'
+date: '`r format(Sys.Date(), "%B %d, %Y")`'
+fontsize: 10pt
+geometry: margin=1in
+mainfont: "Crimson Text"
+output:
+  pdf_document:
+    latex_engine: xelatex
+    fig_caption: yes
+    fig_height: 4
+    fig_width: 4
+---
+
+
+
+```{r include=FALSE, cache=FALSE}
+# Some customization.  You can alter or delete as desired (if you know what you are doing).
+# knitr settings to control how R chunks work.
+
+## To make the html file do
+## render("exploration4.Rmd",output_format=html_document(fig_retina=FALSE))
+## To make the pdf file do
+## render("exploration4.Rmd",output_format=pdf_document())
+
+require(knitr)
+opts_chunk$set(
+  tidy=FALSE,     # display code as typed
+  echo=TRUE,
+  results='markup',
+  strip.white=TRUE,
+  fig.path='figs/fig',
+  cache=FALSE,
+  highlight=TRUE,
+  width.cutoff=132,
+  size='footnotesize',
+  out.width='.9\\textwidth',
+  fig.retina=FALSE,
+  message=FALSE,
+  comment=NA)
+
+if(!file.exists('figs')) dir.create('figs')
+
+options(SweaveHooks=list(fig=function(){
+			   par(mar=c(3.5, 3, 1.1, 0),
+			       pty="s",
+			       mgp=c(1.5,0.5,0),
+			       oma=c(0,0,0,0))},
+			 echo=function(){options(continue=" ") ##Don't show "+" prompts,
+			 options(prompt=" ")
+			 }),
+	digits=4,
+	scipen=8,
+	width=132
+	)
+options(error=function(){options(prompt="> ",continue="+ ");NULL})
+```
+
+
+```{r}
+library(readstata13)
+## code book http://www.jakebowers.org/PS531/anes_timeseries_2016_userguidecodebook.pdf
+anes16 <- read.dta13("http://jakebowers.org/PS531/anes_timeseries_2016.dta")
+## V162034a Numeric POST: For whom did R vote for President
+table(anes16$V162034a,exclude=c())
+### Some recoding (but not all) in here
+source("Data/nes16setup.R") 
+```
+
+```{r}
+library(rstanarm)
+```
+
+
+**The question:** Which predicts Trump vote more strongly --- socioeconomic status or beliefs about immigration?
+
+**The overall task:** Create a reproducible workflow and practice writing about Bayesian approaches to data analysis.
+
+Details:
+ - Use the `rstanarm` package to produce posterior distributions of model quantities (like coefficients and/or predictions) address this question.
+ - Make a new github repository for your group to use for collaboration: Decide if you want to have each group member fork or just use branches for pull requests within the group.
+ - Each task requires its own file: you will want a file for data cleaning, a file for data analysis (say, fitting linear models), a file per figure or table, a file for text.
+ - The text should should be written in LaTeX or R+markdown and should involve a bibliography that is automatically generated using either bibtex or biblatex. The text should be about 1 page and involve one figure and/or one table in addition to an interpretation and explanation of the meaning of the results. (Imagine it as the results section of a paper, but shorter.)
+ - Someone who wanted to reproduce the work they should be able to do so automatically --- without opening and running each file --- and they should be able to do so on their own computer. What system will you use for this?
+    - You may use the old Make system (https://www.google.com/search?q=makefiles+and+r&oq=makefiles+and+r)
+    - Or R oriented approaches like `drake` (https://github.com/ropensci/drake) or `remake` (https://github.com/richfitz/remake) or `snakemake` (https://snakemake.readthedocs.io/en/stable/)
+    - Or something else.
+
+
+
+# References
