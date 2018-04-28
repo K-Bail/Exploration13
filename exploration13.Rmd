@@ -1,6 +1,6 @@
 --
 title: 'Exploration 13: Workflow'
-author: 'Jake Bowers'
+author: 'Kristin, Josh, Miles, Ying'
 date: '`r format(Sys.Date(), "%B %d, %Y")`'
 fontsize: 10pt
 geometry: margin=1in
@@ -63,25 +63,73 @@ library(readstata13)
 ## code book http://www.jakebowers.org/PS531/anes_timeseries_2016_userguidecodebook.pdf
 anes16 <- read.dta13("http://jakebowers.org/PS531/anes_timeseries_2016.dta")
 ## V162034a Numeric POST: For whom did R vote for President
+## YL:
+# -9. Refused
+# -8. Don't know (FTF only)
+# -7. No Post, deleted due to insufficient partial
+# -6. Unit nonresponse, no Post-Election interview
+# 1. Hillary Clinton
+# 2. Donald Trump
+# 3. Gary Johnson
+# 4. Jill Steiin
+# 5. Other candidate SPECIFY
+# 7. Other specify given as: none
+# 9. Other specify given as: RF
+# YL ends
 table(anes16$V162034a,exclude=c())
 ### Some recoding (but not all) in here
-source("Data/nes16setup.R") 
+source("Data/nes16setup.R") # YL: is this in Jake's computer?
 ```
 
 ```{r}
 library(rstanarm)
 ```
 
-
 **The question:** Which predicts Trump vote more strongly --- socioeconomic status or beliefs about immigration?
+
+# YL
+To solve this question, we first need to find the variables that are related to socioeconomic status and immigration in the dataset. The following is what I found. The first two are about immigration. Then follows something that might indicate socioeconomic status. 
+1. V162157 Numeric POST: What should immigration levels be. Do you think the number of immigrants from foreign countries who are permitted to come to the United States to live should be [1 increased a lot, 2 increased a little, 3 left the same as it is now, 4 decreased a little, or 5 decreaseda lot; -9 Refused, -8 Don't know, -7 No post data, deleted due to incomplete IW; -6 No post-election interview]?
+2. V162158 Numeric POST: How likely immigration will take away jobs. How likely is it that recent immigration levels will take jobs away from people already here -- [1 extremely likely, 2 very likely, 3 somewhat likely, or 4 not at all likely]
+
+V161270 PRE: Highest level of Education
+
+V161304 PRE: Think of self as belonging to class
+V161305a PRE: Social Class: working or middle
+V161305b PRE: Social Class: had to choose working middle
+V161306 PRE: Social class: average or upper working middle class 
+V161307 PRE: Social class (2-question version)
+V161307a PRE: EGSS social class if middle class
+V161308x PRE: SUMMARY - R self-identified social class
+V162132 POST: R social class
+
+V161361x PRE FTF CASI/WEB: Pre income summary
+
+Question: 1. we need to choose which variables we are using as independent variables
+2. Pre or Post?
+3. Should we add some control variables? If so, what are they?
+Are you guys more familiar than me with this dataset? I'm definitely not reliable when it comes to politics studies!
+# YL ends
 
 **The overall task:** Create a reproducible workflow and practice writing about Bayesian approaches to data analysis.
 
-Details:
- - Use the `rstanarm` package to produce posterior distributions of model quantities (like coefficients and/or predictions) address this question.
+Details: (YL rearranged the order of the following instructions)
+Step 1
  - Make a new github repository for your group to use for collaboration: Decide if you want to have each group member fork or just use branches for pull requests within the group.
+YL: Check! We are not forking. We even don't use branches, because as a small group, face-to-face meetings enable us to solve problems immediately via discussion.
+
+Step2
+- The text should should be written in LaTeX or R+markdown and should involve a bibliography that is automatically generated using either bibtex or biblatex. The text should be about 1 page and involve one figure and/or one table in addition to an interpretation and explanation of the meaning of the results. (Imagine it as the results section of a paper, but shorter.)
+YL: We are doing this right now.
+
+Step3
  - Each task requires its own file: you will want a file for data cleaning, a file for data analysis (say, fitting linear models), a file per figure or table, a file for text.
- - The text should should be written in LaTeX or R+markdown and should involve a bibliography that is automatically generated using either bibtex or biblatex. The text should be about 1 page and involve one figure and/or one table in addition to an interpretation and explanation of the meaning of the results. (Imagine it as the results section of a paper, but shorter.)
+YL: I'm a bit confused here. So we should divide the whole project into different parts and store them as independent files in Github repo?
+
+Step4
+  - Use the `rstanarm` package to produce posterior distributions of model quantities (like coefficients and/or predictions) address this question.
+
+Step5
  - Someone who wanted to reproduce the work they should be able to do so automatically --- without opening and running each file --- and they should be able to do so on their own computer. What system will you use for this?
     - You may use the old Make system (https://www.google.com/search?q=makefiles+and+r&oq=makefiles+and+r)
     - Or R oriented approaches like `drake` (https://github.com/ropensci/drake) or `remake` (https://github.com/richfitz/remake) or `snakemake` (https://snakemake.readthedocs.io/en/stable/)
