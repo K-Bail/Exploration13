@@ -111,6 +111,51 @@ Question: 1. we need to choose which variables we are using as independent varia
 Are you guys more familiar than me with this dataset? I'm definitely not reliable when it comes to politics studies!
 # YL ends
 
+## KB Group Notes:
+ Choosing variables/indicators
+selecting all pre-indicators because they're occurring before the election and not after, which is getting closer to what the research question is actually asking
+
+socioeconomic status-- education, occupation. Income was a possibility, but because respondents are known to provide unreliable answers when it comes to question of money, the estimates we attain from measure of income could be unrealiable. We can't be sure people reliably report their income. Income, education, and occupation tend to be highly correlated, and because that's the case we choose to use education as a proxy for socioeconomic status. Footnote, it's also a lot easier than income
+
+https://www.thisamericanlife.org/304/heretics
+
+Because it's the only pre-immigration question, we're using the question on unauthorized immigration. 
+
+Missing or no opinion answers are coded as NA. in everything
+
+Treating immigration responses as an interval and we think it's useful to do that.
+
+###How do we operationalize the outcome? 
+
+Created a dummy, vote for Trump or not. Non-responses were treated as NA.
+
+Same for whether or not they intended to vote for Trump
+
+###Controlling for?
+Race-- operationlized as being white, because you're shown significantly more likely to say they intend to vote for trump, express more negative attitudes toward undocumented immigrants, and more likely to have higher levels of education than non-white respondents. 
+
+Gender-- significance of education is really sensitive to the inclusion of gender
+
+we inlude intend to vote trump, unauthorized immigration, highest edu, and white because not only are these variables predictors of the outcome, they're also strongly associated with one another. And gender is weakly associated. Though many studies include gender when predicting how people vote, we found gender to be weakly associated not only with the outcome, but also with the other predictors, making it difficult to justify including it as a control in our model. 
+
+## Main part
+
+Justify the priors
+do analysis stuff
+write code
+
+do write-up
+
+make/use figure
+
+presentation
+answer the question-- which is a better predictor
+show method and justify choices
+substantively interpreting the Bayesian distributions
+
+
+
+ 
 **The overall task:** Create a reproducible workflow and practice writing about Bayesian approaches to data analysis.
 
 Details: (YL rearranged the order of the following instructions)
