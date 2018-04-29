@@ -1,0 +1,118 @@
+---
+title: "R Code for Analysis"
+output:
+  html_document:
+    df_print: paged
+  html_notebook: default
+  pdf_document: default
+---
+
+
+```{r get data}
+anes16 <- read.csv("https://raw.githubusercontent.com/milesdwilliams15/Exploration13/master/anes16.csv")
+```
+
+```{r make recodes}
+anes_small <- data.frame(immig=anes16$V161192,
+                         educ=anes16$V161270,
+                         female=anes16$V161002,
+                         white=anes16$V161310x,
+                         voted_trump=anes16$V162034a,
+                         intend_trump=anes16$V161031)
+
+# Recode attitudes about gov't policy toward undocumented
+# immigrants
+# NA = missing or don't know
+# 0 = Make all unauthorized immigrants felons and deport them
+#     & Have a guest worker program in order to work
+# 1 = Allow to remain with some penalty
+#     & Allow to remain without penalty
+anes_small$immig[anes_small$immig<0] <- NA
+anes_small$immig[anes_small$immig<=2] <- 0
+anes_small$immig[anes_small$immig>=3] <- 1
+
+# Recode highest level of reducation per respondent
+# NA = refused, don't know, or other
+# 0 = Less than high school
+# 8 = Doctorate
+anes_small$educ[anes_small$educ<0] <- NA
+anes_small$educ[anes_small$educ>16] <- NA
+anes_small$educ[anes_small$educ<9] <- 8
+anes_small$educ <- anes_small$educ - 8
+summary(anes_small$educ)
+
+# Recode female -- 1 = female; 0 = male; NA = refused/don't know/inap.
+anes_small$female[anes_small$female<0] <- NA
+anes_small$female <- anes_small$female - 1
+
+# Recode white
+# NA = missing
+# 1 = White
+# 0 = Else
+anes_small$white[anes_small$white<0] <- NA
+anes_small$white[anes_small$white>1] <- 0
+
+# Recode whether respondent intended to vote for Trump
+# NA = refused/don't know/inap./no one
+# 1 = Trump
+# 0 = else
+anes_small$intend_trump[anes_small$intend_trump<0 |
+                          anes_small$intend_trump==8] <- NA
+anes_small$intend_trump[anes_small$intend_trump==1 |
+                          anes_small$intend_trump>2] <- 0
+anes_small$intend_trump[anes_small$intend_trump==2] <- 1
+
+# Recode whether respondent voted for Trump
+# NA = refused/don't know/no post/nonresponse/none
+# 1 = voted for trump
+# 0 = else
+anes_small$voted_trump[anes_small$voted_trump<0 |
+                         anes_small$voted_trump==7] <- NA
+anes_small$voted_trump[anes_small$voted_trump==1 |
+                         anes_small$voted_trump>2] <- 0
+anes_small$voted_trump[anes_small$voted_trump==2] <- 1
+
+anes_small <- na.omit(anes_small)
+```
+
+```{r analysis}
+# Predict who intended to vote for Trump
+library(rstanarm)
+bglm_intend <- stan_glm(intend_trump ~ immig + educ + white,
+                        anes_small, family=binomial,
+                        prior=NULL,
+                        prior_intercept=NULL,
+                        chains=10,
+                        seed=222)
+# Use estimates and SDs as priors for model that predicts
+# who voted for Trump
+bglm_voted <- stan_glm(voted_trump ~ immig + educ + white,
+                        anes_small, family=binomial,
+                        prior=c(student_t(df=1,bglm_intend$coefficients[2],
+                                          bglm_intend$ses[2]),
+                                student_t(df=1,bglm_intend$coefficients[3],
+                                          bglm_intend$ses[3]),
+                                student_t(df=1,bglm_intend$coefficients[4],
+                                          bglm_intend$ses[4])),
+                        prior_intercept=student_t(df=1,bglm_intend$coefficients[1],
+                                          bglm_intend$ses[1]),
+                        chains=10,
+                        seed=222)
+```
+
+```{r figures}
+library(ggplot2)
+library(gridExtra)
+p1 <- plot(bglm_intend) + theme_bw() + 
+  scale_y_discrete(labels=c("Intercept","Immig. should stay",
+                            "Education","White")) +
+  labs(x="Point Estimates with 95% Credible Intervals",
+       title="Bayesian Logit\nLikelihood of Intending to Vote for Trump\n(Uninformative priors used)")
+p2 <- plot(bglm_voted) + theme_bw() +
+  scale_y_discrete(labels=c("Intercept","Immig. should stay",
+                            "Education","White")) +
+  labs(x="Point Estimates with 95% Credible Intervals",
+       title="Bayesian Logit\nLikelihood of Voting for Trump\n(Priors taken from intent to vote for Trump model)")
+grid.arrange(p1,p2)
+```
+
