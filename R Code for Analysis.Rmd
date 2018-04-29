@@ -18,7 +18,8 @@ anes_small <- data.frame(immig=anes16$V161192,
                          female=anes16$V161002,
                          white=anes16$V161310x,
                          voted_trump=anes16$V162034a,
-                         intend_trump=anes16$V161031)
+                         intend_trump=anes16$V161031,
+                         repub=anes16$V161158x)
 
 # Recode attitudes about gov't policy toward undocumented
 # immigrants
@@ -52,6 +53,13 @@ anes_small$female <- anes_small$female - 1
 anes_small$white[anes_small$white<0] <- NA
 anes_small$white[anes_small$white>1] <- 0
 
+# Recode respondent partisan ID
+# 0 = Other
+# 1 = Republican
+anes_small$repub[anes_small$repub<0] <- NA
+anes_small$repub[anes_small$repub<5] <- 0
+anes_small$repub[anes_small$repub>=5] <- 1
+
 # Recode whether respondent intended to vote for Trump
 # NA = refused/don't know/inap./no one
 # 1 = Trump
@@ -78,7 +86,7 @@ anes_small <- na.omit(anes_small)
 ```{r analysis}
 # Predict who intended to vote for Trump
 library(rstanarm)
-bglm_intend <- stan_glm(intend_trump ~ immig + educ + white,
+bglm_intend <- stan_glm(intend_trump ~ immig + educ + white + repub,
                         anes_small, family=binomial,
                         prior=NULL,
                         prior_intercept=NULL,
@@ -86,13 +94,15 @@ bglm_intend <- stan_glm(intend_trump ~ immig + educ + white,
                         seed=222)
 # Use estimates and SDs as priors for model that predicts
 # who voted for Trump
-bglm_voted <- stan_glm(voted_trump ~ immig + educ + white,
+bglm_voted <- stan_glm(voted_trump ~ immig + educ + white + repub,
                         anes_small, family=binomial,
                         prior=c(student_t(df=1,bglm_intend$coefficients[2],
                                           bglm_intend$ses[2]),
                                 student_t(df=1,bglm_intend$coefficients[3],
                                           bglm_intend$ses[3]),
                                 student_t(df=1,bglm_intend$coefficients[4],
+                                          bglm_intend$ses[4]),
+                                student_t(df=1,bglm_intend$coefficients[5],
                                           bglm_intend$ses[4])),
                         prior_intercept=student_t(df=1,bglm_intend$coefficients[1],
                                           bglm_intend$ses[1]),
@@ -105,12 +115,12 @@ library(ggplot2)
 library(gridExtra)
 p1 <- plot(bglm_intend) + theme_bw() + 
   scale_y_discrete(labels=c("Intercept","Immig. should stay",
-                            "Education","White")) +
+                            "Education","White","Republican")) +
   labs(x="Point Estimates with 95% Credible Intervals",
        title="Bayesian Logit\nLikelihood of Intending to Vote for Trump\n(Uninformative priors used)")
 p2 <- plot(bglm_voted) + theme_bw() +
   scale_y_discrete(labels=c("Intercept","Immig. should stay",
-                            "Education","White")) +
+                            "Education","White","Republican")) +
   labs(x="Point Estimates with 95% Credible Intervals",
        title="Bayesian Logit\nLikelihood of Voting for Trump\n(Priors taken from intent to vote for Trump model)")
 grid.arrange(p1,p2)
