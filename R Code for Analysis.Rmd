@@ -39,8 +39,12 @@ anes_small$immig[anes_small$immig>=3] <- 1
 anes_small$educ[anes_small$educ<0] <- NA
 anes_small$educ[anes_small$educ>16] <- NA
 anes_small$educ[anes_small$educ<9] <- 8
+anes_small$educ[anes_small$educ>13] <- 14
+anes_small$educ[anes_small$educ>=9 &
+                  anes_small$educ<=12] <- 12
 anes_small$educ <- anes_small$educ - 8
-summary(anes_small$educ)
+anes_small$educ[anes_small$educ==0] <- 3
+anes_small$educ <- anes_small$educ - 3
 
 # Recode female -- 1 = female; 0 = male; NA = refused/don't know/inap.
 anes_small$female[anes_small$female<0] <- NA
