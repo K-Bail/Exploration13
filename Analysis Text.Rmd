@@ -1,0 +1,21 @@
+---
+title: Pithy Title
+author: 
+- Ying Li
+- Kristin Bail
+- Josh Holmes
+- Miles Williams
+output:
+  pdf_document:
+    number_sections: yes
+  html_document: default
+  word_document: default
+fontfamily: mathpazo
+geometry: margin=1in
+header-includes:
+- \usepackage{setspace}
+- \singlespacing
+- \setlength\parindent{24pt}
+---
+
+![test](https://github.com/milesdwilliams15/Exploration13/blob/master/bayesplot.png?raw=true)
