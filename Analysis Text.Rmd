@@ -19,7 +19,7 @@ header-includes:
 
 ##Introduction
 
-In the aftermath of the 2016 election, many a social scientist developed a theory to explain the outcome. Among the most prominent predictors posited are socioeconomic status [@manza2017] and attitudes towards immigration [@moody2017]. Following a short series of tests, our team reports attitudes towards immigration as a stronger predictor of voting for Trump than socioeconomic status. 
+In the aftermath of the 2016 election, many a social scientist developed a theory to explain the outcome [@krieg2016]. Among the most prominent predictors posited are socioeconomic status [@manza2017] and attitudes towards immigration [@moody2017]. Following a short series of tests, our team reports attitudes towards immigration as a stronger predictor of voting for Trump than socioeconomic status. 
 
 ### Data
 
@@ -33,6 +33,8 @@ We adopt a Bayesian approach to inference. We begin by estimating a Bayesian log
 to determine the estimated effect of covariates on the likelihood that a respondent said that they intended to vote
 for Trump pre-election. We then used estimates from this model as priors for a second Bayesian logit model where we
 predict whether respondents reported voting for Trump post-election.
+
+*Two citations that Miles recommended for this section - [@gelman2007] and [@lynch2007] - not sure where to put them, though*
 
 ###Results
 
