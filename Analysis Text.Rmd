@@ -1,10 +1,7 @@
 ---
-title: Pithy Title
+title: Trump's Ahoy!
 author: 
-- Ying Li
-- Kristin Bail
-- Josh Holmes
-- Miles Williams
+- Ying Li, Kristin Bail, Josh Holmes, Miles Williams
 output:
   pdf_document:
     number_sections: yes
@@ -17,5 +14,34 @@ header-includes:
 - \singlespacing
 - \setlength\parindent{24pt}
 ---
+
+
+
+##Introduction
+
+In the aftermath of the 2016 election, many a social scientist developed a theory to explain the outcome. Among the most prominent predictors posited are socioeconomic status [@manza2017] and attitudes towards immigration [@moody2017]. Following a short series of tests, our team reports attitudes towards immigration as a stronger predictor of voting for Trump than socioeconomic status. 
+
+### Data
+
+Our outcome is a binary indicator of whether respondents from the 2016 American National Election Survey [@anes] voted for Trump. We proxied socioeconomic status as highest educational attainment. Higher levels of education are frequently linked to better economic and social outcomes [@apa2009task]. Immigration attitudes are proxied by respondent attitudes toward government policy on undocumented immigration. We additionally controlled for whether respondents were white or a self-reported Republican because these variables are not uniformly distributed across those with varying attitudes about immigration and with dissimilar levels of education. *There are __ observations. *
+
+Socioeconomic status, proxied by highest level of educational attainment, is divided into four distinct categories: those with graduate or professional degrees, only bachelor's degrees, a high school diploma and some college, and less than a high school diploma. These categories follow the logic that increased education is highly correlated with wages and standard of living, variables also associated with socioeconomic status. We proxy immigration attitudes with respondents' reported feelings toward government policy toward undocumented immigration. We use a binary indicator for whether a respondent thinks undocumented immigrants should be allowed to remain in the country. 
+
+### Analysis
+
+We adopt a Bayesian approach to inference. We begin by estimating a Bayesian logit model with uninformative priors 
+to determine the estimated effect of covariates on the likelihood that a respondent said that they intended to vote
+for Trump pre-election. We then used estimates from this model as priors for a second Bayesian logit model where we
+predict whether respondents reported voting for Trump post-election.
+
+###Results
+
+Figure 1 shows point estimates of posterior distributions for each of the Bayesian logit model parameters. 95 percent Bayesian credible intervals are shown. The point estimates are _____. The credible intervals show ________. 
+Our analyses show attitudes toward undocumented immigrants better predict the likelihood a respondent voted for
+Trump, controlling for race and self-reported party identification. Both education and attitudes toward immigration were significant predictors, however immigration attitudes are greater in magnitude. 
+
+
+
+
 
 ![test](https://github.com/milesdwilliams15/Exploration13/blob/master/bayesplot.png?raw=true)
