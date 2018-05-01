@@ -57,7 +57,7 @@ int2 <- c(round(ci[3,4],3), round(ci[3,10],3))
 \label{fig:bayesplot}
 \end{figure}
 
-Figure \ref{fig:bayesplot} shows point estimates of posterior distributions for each of the Bayesian logit model parameters. 95 percent Bayesian credible intervals are shown. The point estimates are `r e1` for attitudes towards immigration and `r e2` for education. The credible intervals for these two variables are `r int1` and `r int2` respectively.
+Figure \ref{fig:bayesplot} shows point estimates of posterior distributions for each of the Bayesian logit model parameters. 95 percent Bayesian credible intervals are shown. The point estimates are `r e1` for attitudes towards immigration and `r e2` for education. The credible intervals for these two variables are (`r int1`) and (`r int2`) respectively.
 
 The analyses show attitudes toward undocumented immigrants better predict the likelihood a respondent voted for
 Trump, controlling for race and self-reported party identification. Both education and attitudes toward immigration were significant predictors, however immigration attitudes are greater in magnitude. 
