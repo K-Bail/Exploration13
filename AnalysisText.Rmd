@@ -44,31 +44,12 @@ The point estimates are the means of the posterior, which are proportional to th
 
 #Results
 ```{r results='hide',warning=FALSE}
-library(rstanarm)
-bglm_intend <- stan_glm(intend_trump ~ immig + educ + white + repub,
-                        anes_small, family=binomial,
-                        prior=NULL,
-                        prior_intercept=NULL,
-                        chains=10,
-                        seed=222)
-bglm_voted <- stan_glm(voted_trump ~ immig + educ + white + repub,
-                        anes_small, family=binomial,
-                        prior=c(student_t(df=1,bglm_intend$coefficients[2],
-                                          bglm_intend$ses[2]),
-                                student_t(df=1,bglm_intend$coefficients[3],
-                                          bglm_intend$ses[3]),
-                                student_t(df=1,bglm_intend$coefficients[4],
-                                          bglm_intend$ses[4]),
-                                student_t(df=1,bglm_intend$coefficients[5],
-                                          bglm_intend$ses[4])),
-                        prior_intercept=student_t(df=1,bglm_intend$coefficients[1],
-                                          bglm_intend$ses[1]),
-                        chains=10,
-                        seed=222)
-e1 <- round(bglm_voted$coefficients[2],3)
-e2 <- round(bglm_voted$coefficients[3],3)
-int1 <- c(round(bglm_voted$stan_summary[2,4],3), round(bglm_voted$stan_summary[2,10],3))
-int2 <- c(round(bglm_voted$stan_summary[3,4],3), round(bglm_voted$stan_summary[3,10],3))
+load("est.Rda")
+load("ci.Rda")
+e1 <- round(est[2,1],3)
+e2 <- round(est[3,1],3)
+int1 <- c(round(ci[2,4],3), round(ci[2,10],3))
+int2 <- c(round(ci[3,4],3), round(ci[3,10],3))
 ```
 \begin{figure}
 \includegraphics{bayesplot.png}
