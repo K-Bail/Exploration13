@@ -1,5 +1,5 @@
 ---
-title: Trump Ahoy!
+title: Trump's Ahoy!
 author: 
 - Ying Li, Kristin Bail, Josh Holmes, Miles Williams
 bibliography: references.bib
