@@ -1,0 +1,85 @@
+---
+title: Trump Ahoy!
+author: 
+- Ying Li, Kristin Bail, Josh Holmes, Miles Williams
+bibliography: references.bib
+output:
+  pdf_document:
+    number_sections: yes
+  html_document: default
+  word_document: default
+fontfamily: mathpazo
+geometry: margin=1in
+header-includes:
+- \usepackage{setspace}
+- \singlespacing
+- \setlength\parindent{24pt}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = F, message=FALSE, out.extra = "")
+```
+##Introduction
+
+In the aftermath of the 2016 U.S. presidential election, people the world over presented theories attempting to explain the outcome [@krieg2016]. Among the most prominent explanations are socioeconomic status [@manza2017] and attitudes towards immigration [@moody2017]. Following a short series of tests, our team reports attitudes towards immigration as a stronger predictor of voting for Trump than socioeconomic status. 
+
+## Data
+```{r}
+anes_small <- read.csv("anes_small.csv")
+n <- nrow(anes_small) 
+```
+
+Our outcome is a binary indicator of whether respondents from the 2016 American National Election Survey (ANES) [@anes] voted for Trump. We proxied socioeconomic status as highest educational attainment. Higher levels of education are frequently linked to better economic and social outcomes [@apa2009task]. Immigration attitudes are proxied by respondent attitudes toward government policy on undocumented immigration. We additionally controlled for whether respondents were white or self-reported as Republican because these variables are not uniformly distributed across those with varying attitudes about immigration and with dissimilar levels of education. There are `r n` observations.
+
+Socioeconomic status, proxied by highest level of educational attainment, is divided into four distinct categories: those with graduate or professional degrees, only bachelor's degrees, a high school diploma and some college, and less than a high school diploma. These categories follow the logic that increased education is highly correlated with wages and standard of living, variables also associated with socioeconomic status. We proxy immigration attitudes with respondents' reported feelings toward government policy toward undocumented immigration and use a binary indicator for whether a respondent thinks undocumented immigrants should be allowed to remain in the country. 
+
+## Analysis
+
+We adopt a Bayesian approach to inference, beginning by estimating a Bayesian logit model with uninformative priors 
+to determine the estimated effect of covariates on the likelihood that a respondent said that they intended to vote
+for Trump pre-election. We then used estimates from this model as priors for a second Bayesian logit model where we
+predict whether respondents reported voting for Trump post-election.
+
+*Two citations that Miles recommended for this section - [@gelman2007] and [@lynch2007] - not sure where to put them, though*
+
+##Results
+```{r results='hide',warning=FALSE}
+library(rstanarm)
+bglm_intend <- stan_glm(intend_trump ~ immig + educ + white + repub,
+                        anes_small, family=binomial,
+                        prior=NULL,
+                        prior_intercept=NULL,
+                        chains=10,
+                        seed=222)
+bglm_voted <- stan_glm(voted_trump ~ immig + educ + white + repub,
+                        anes_small, family=binomial,
+                        prior=c(student_t(df=1,bglm_intend$coefficients[2],
+                                          bglm_intend$ses[2]),
+                                student_t(df=1,bglm_intend$coefficients[3],
+                                          bglm_intend$ses[3]),
+                                student_t(df=1,bglm_intend$coefficients[4],
+                                          bglm_intend$ses[4]),
+                                student_t(df=1,bglm_intend$coefficients[5],
+                                          bglm_intend$ses[4])),
+                        prior_intercept=student_t(df=1,bglm_intend$coefficients[1],
+                                          bglm_intend$ses[1]),
+                        chains=10,
+                        seed=222)
+e1 <- round(bglm_voted$coefficients[2],3)
+e2 <- round(bglm_voted$coefficients[3],3)
+int1 <- c(round(bglm_voted$stan_summary[2,4],3), round(bglm_voted$stan_summary[2,10],3))
+int2 <- c(round(bglm_voted$stan_summary[3,4],3), round(bglm_voted$stan_summary[3,10],3))
+```
+\begin{figure}
+\includegraphics{bayesplot.png}
+\caption{Estimates and Credible Intervals of A Bayesian Logit Model}
+\label{fig:bayesplot}
+\end{figure}
+
+Figure \ref{fig:bayesplot} shows point estimates of posterior distributions for each of the Bayesian logit model parameters. 95 percent Bayesian credible intervals are shown. The point estimates are `r e1` for attitudes towards immigration and `r e2` for education. The credible intervals for these two variables are (`r int1`) and (`r int2`) respectively.
+
+The analyses show attitudes toward undocumented immigrants better predict the likelihood a respondent voted for
+Trump, controlling for race and self-reported party identification. Both education and attitudes toward immigration were significant predictors, however immigration attitudes are greater in magnitude. 
+
+##References
+
