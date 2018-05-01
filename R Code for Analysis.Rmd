@@ -112,6 +112,8 @@ bglm_voted <- stan_glm(voted_trump ~ immig + educ + white + repub,
                                           bglm_intend$ses[1]),
                         chains=10,
                         seed=222)
+est <- data.frame(bglm_voted$coefficients)
+ci <- data.frame(bglm_voted$stan_summary)
 save(est,file="est.Rda")
 save(ci, file="ci.Rda")
 ```
