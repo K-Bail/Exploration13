@@ -2,6 +2,7 @@
 title: Trump's Ahoy!
 author: 
 - Ying Li, Kristin Bail, Josh Holmes, Miles Williams
+bibliography: references.bib
 output:
   pdf_document:
     number_sections: yes
@@ -71,7 +72,7 @@ int2 <- c(round(bglm_voted$stan_summary[3,4],3), round(bglm_voted$stan_summary[3
 ```
 \begin{figure}
 \includegraphics{bayesplot.png}
-\caption{Estimates and Credential Intervals of A Bayesian Logit Model}
+\caption{Estimates and Credible Intervals of A Bayesian Logit Model}
 \label{fig:bayesplot}
 \end{figure}
 
@@ -79,4 +80,6 @@ Figure \ref{fig:bayesplot} shows point estimates of posterior distributions for 
 
 Our analyses show attitudes toward undocumented immigrants better predict the likelihood a respondent voted for
 Trump, controlling for race and self-reported party identification. Both education and attitudes toward immigration were significant predictors, however immigration attitudes are greater in magnitude. 
+
+##References
 
